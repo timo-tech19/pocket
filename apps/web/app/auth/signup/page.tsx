@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import SignupForm from './_components/signup-form'
 
 function SignupPage() {
     return (
@@ -7,6 +8,7 @@ function SignupPage() {
             <h1 className="text-center text-2xl font-bold mb-4">Sign Up</h1>
 
             {/* Sign Up Form */}
+            <SignupForm />
 
             <div className="flex justify-between text-sm">
                 <p>Already have an account? </p>
