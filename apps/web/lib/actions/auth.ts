@@ -67,13 +67,13 @@ export async function signIn(
     if (response.ok) {
         const result = await response.json()
 
-        // TODO: Create the session of authenticated user
         await createSession({
             user: {
                 id: result.id,
                 name: result.name,
             },
             accessToken: result.accessToken,
+            refreshToken: result.refreshToken,
         })
         redirect('/')
     } else {

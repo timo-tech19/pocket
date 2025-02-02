@@ -11,7 +11,7 @@ export type Session = {
         //   role: Role;
     }
     accessToken: string
-    // refreshToken: string;
+    refreshToken: string
 }
 const secretKey = process.env.SESSION_SECRET_KEY!
 const encodedKey = new TextEncoder().encode(secretKey)
