@@ -52,13 +52,19 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
     @Get('google/callback')
     async googleCallback(@Request() req, @Res() res: Response) {
-        // console.log('Google User: ', req.user)
         const response = await this.authService.login(
             req.user.id,
             req.user.name,
         )
+
         res.redirect(
             `http://localhost:3000/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}`,
         )
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('signout')
+    signOut(@Request() req) {
+        return this.authService.signOut(req.user.id)
     }
 }

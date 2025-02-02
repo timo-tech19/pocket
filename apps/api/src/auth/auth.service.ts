@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import type { ConfigType } from '@nestjs/config'
-import { verify } from 'argon2'
+import { hash, verify } from 'argon2'
 
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { UserService } from 'src/user/user.service'
@@ -48,6 +48,9 @@ export class AuthService {
     async login(userId: number, name?: string) {
         const { accessToken, refreshToken } = await this.generateTokens(userId)
 
+        const hashedRT = await hash(refreshToken)
+        await this.userService.updateHashedRefreshToken(userId, hashedRT)
+
         return {
             id: userId,
             name,
@@ -74,15 +77,26 @@ export class AuthService {
         return { id: user.id }
     }
 
-    async validateRefreshToken(userId: number) {
+    async validateRefreshToken(userId: number, refreshToken: string) {
         const user = await this.userService.findById(userId)
         if (!user) throw new UnauthorizedException('User not found!')
+
+        const refreshTokenMatched = await verify(
+            user.hashedRefreshToken,
+            refreshToken,
+        )
+
+        if (!refreshTokenMatched)
+            throw new UnauthorizedException('Invalid Refresh Token!')
 
         return { id: user.id }
     }
 
     async refreshToken(userId: number, name: string) {
         const { accessToken, refreshToken } = await this.generateTokens(userId)
+
+        const hashedRT = await hash(refreshToken)
+        await this.userService.updateHashedRefreshToken(userId, hashedRT)
 
         return {
             id: userId,
@@ -98,5 +112,9 @@ export class AuthService {
         if (user) return user
 
         return this.userService.create(googleUser)
+    }
+
+    async signOut(userId: number) {
+        return this.userService.updateHashedRefreshToken(userId, null)
     }
 }
