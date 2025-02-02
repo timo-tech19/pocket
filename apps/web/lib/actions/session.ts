@@ -10,7 +10,7 @@ export type Session = {
         name: string
         //   role: Role;
     }
-    // accessToken: string;
+    accessToken: string
     // refreshToken: string;
 }
 const secretKey = process.env.SESSION_SECRET_KEY!
