@@ -17,7 +17,6 @@ import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard'
 import { Public } from './decorators/public.decorator'
 import { Roles } from './decorators/roles.decorator'
 import { RolesGuard } from './guards/roles/roles.guard'
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +32,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('signin')
     login(@Request() req) {
-        return this.authService.login(req.user.id, req.user.name)
+        return this.authService.login(req.user.id, req.user.name, req.user.role)
     }
 
     @Roles('ADMIN', 'EDITOR')
@@ -64,10 +63,11 @@ export class AuthController {
         const response = await this.authService.login(
             req.user.id,
             req.user.name,
+            req.user.role,
         )
 
         res.redirect(
-            `http://localhost:3000/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}`,
+            `http://localhost:3000/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}&role=${response.role}`,
         )
     }
 

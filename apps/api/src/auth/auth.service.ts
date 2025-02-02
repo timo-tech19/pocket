@@ -12,6 +12,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto'
 import { UserService } from 'src/user/user.service'
 import { AuthJwtPayload } from './types/auth-jwt-payload'
 import refreshConfig from './config/refresh.config'
+import { Role } from '@prisma/client'
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,7 @@ export class AuthService {
         }
     }
 
-    async login(userId: number, name?: string) {
+    async login(userId: number, name: string, role: Role) {
         const { accessToken, refreshToken } = await this.generateTokens(userId)
 
         const hashedRT = await hash(refreshToken)
@@ -55,6 +56,7 @@ export class AuthService {
         return {
             id: userId,
             name,
+            role,
             accessToken,
             refreshToken,
         }

@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const refreshToken = searchParams.get('refreshToken')
     const userId = searchParams.get('userId')
     const name = searchParams.get('name')
-    // const role = searchParams.get('role')
+    const role = searchParams.get('role')
 
     if (!accessToken || !refreshToken || !userId || !name)
         throw new Error('Google Oauth Failed!')
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
         user: {
             id: userId,
             name: name,
-            // role: role as Role,
+            role: role as Role,
         },
         accessToken,
         refreshToken,
