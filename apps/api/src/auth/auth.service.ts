@@ -42,6 +42,7 @@ export class AuthService {
         return {
             id: user.id,
             name: user.name,
+            role: user.role,
         }
     }
 
@@ -74,7 +75,7 @@ export class AuthService {
         const user = await this.userService.findById(userId)
         if (!user) throw new UnauthorizedException('User not found!')
 
-        return { id: user.id }
+        return { id: user.id, role: user.role }
     }
 
     async validateRefreshToken(userId: number, refreshToken: string) {
